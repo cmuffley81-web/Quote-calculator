@@ -1,979 +1,994 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full w-full bg-[#121512] text-gray-100">
+<html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sound Fox Notary — Fee Quote Calculator</title>
-    
-    <!-- Google Fonts: Inter & JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            lime: '#a3c93a',
-                            gold: '#e8b84b',
-                            darkOlive: '#1c2419',
-                            midOlive: '#242f21',
-                            lightOlive: '#2e3d2a',
-                            charcoal: '#121512',
-                            panel: '#181d17',
-                            border: 'rgba(163, 201, 58, 0.22)',
-                            goldBorder: 'rgba(232, 184, 75, 0.3)'
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace']
-                    }
-                }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Sound Fox Notary - Fee Quote Calculator</title>
+
+  <!-- Google Fonts: Cinzel (Serif Elegance), Inter (UI Sans), JetBrains Mono (Financial Numbers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            oxblood: {
+              950: '#150204',
+              900: '#2c0407',
+              800: '#4a090d',
+              700: '#6b0d13',
+              600: '#8e141c',
+            },
+            gold: {
+              100: '#fcf7ec',
+              200: '#f6ebd0',
+              300: '#ebd49f',
+              400: '#e2be7d',
+              500: '#c59b52',
+              600: '#a37c3b',
+              700: '#805f2a',
+            },
+            parchment: {
+              50: '#fbf8f3',
+              100: '#f3ede2',
+              200: '#e6dac7',
+              300: '#d7c4a8',
             }
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'Georgia', 'serif'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
         }
-    </script>
-    <style>
-        /* Custom scrollbar and edge-to-edge optimizations */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #121512;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2e3d2a;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #a3c93a;
-        }
-        
-        /* Custom styled range slider */
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #e8b84b;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(232, 184, 75, 0.5);
-            border: 2px solid #121512;
-        }
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #e8b84b;
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(232, 184, 75, 0.5);
-            border: 2px solid #121512;
-        }
-        
-        /* Glow Effects */
-        .gold-glow {
-            box-shadow: 0 0 25px rgba(232, 184, 75, 0.15);
-        }
-        .lime-glow {
-            box-shadow: 0 0 20px rgba(163, 201, 58, 0.15);
-        }
-        .active-ring {
-            box-shadow: 0 0 0 2px #a3c93a;
-        }
-    </style>
+      }
+    }
+  </script>
+
+  <style>
+    /* iOS Safe Area Insets Support */
+    .pb-safe { padding-bottom: max(1.25rem, env(safe-area-inset-bottom)); }
+    .pt-safe { padding-top: max(1rem, env(safe-area-inset-top)); }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(197, 155, 82, 0.3); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(197, 155, 82, 0.6); }
+
+    /* Smooth theme transitions */
+    body, div, header, main, section, button, input, select {
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+  </style>
 </head>
-<body class="w-screen min-h-screen bg-[#121512] text-gray-100 flex flex-col font-sans selection:bg-[#a3c93a] selection:text-black overflow-x-hidden pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+<body class="h-full bg-parchment-50 text-stone-800 dark:bg-oxblood-950 dark:text-parchment-50 font-sans antialiased selection:bg-gold-400 selection:text-oxblood-900 flex flex-col">
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transform -translate-y-16 opacity-0 transition-all duration-300 pointer-events-none">
-        <div class="bg-brand-gold text-black font-semibold px-5 py-3 rounded-full shadow-2xl flex items-center gap-2 text-sm tracking-wide">
-            <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-            <span id="toast-message">Copied to clipboard!</span>
+  <!-- TOP HEADER & BRANDING -->
+  <header class="bg-oxblood-800 border-b border-gold-500/30 text-parchment-50 sticky top-0 z-40 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Logo & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gold-300 via-gold-400 to-gold-600 flex items-center justify-center shadow-md border border-gold-200">
+          <!-- Fox & Stamp Emblem SVG -->
+          <svg class="w-6 h-6 text-oxblood-900" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2L2 9l10 7 10-7-10-7zm0 9.5L5.5 7 12 4.5 18.5 7 12 11.5zM3 13.5l3.5 2.5L3 18.5v-5zm18 0v5l-3.5-2.5 3.5-2.5zM12 15l-6 4.2V21l6-2 6 2v-1.8L12 15z"/>
+          </svg>
         </div>
-    </div>
-
-    <!-- Main Container Layout (Edge-to-Edge Responsive Grid) -->
-    <div class="w-full min-h-screen flex flex-col justify-between">
-        
-        <!-- TOP HEADER BAR -->
-        <header class="w-full bg-brand-darkOlive/90 backdrop-blur-md border-b border-brand-border px-4 py-3 sm:px-8 sm:py-4 flex items-center justify-between sticky top-0 z-30">
-            <div class="flex items-center gap-3">
-                <!-- Brand Fox SVG Logo Icon -->
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-brand-midOlive to-brand-lightOlive border border-brand-lime/40 flex items-center justify-center p-1.5 shadow-md">
-                    <svg viewBox="0 0 100 100" class="w-full h-full text-brand-lime" fill="currentColor">
-                        <!-- Origami / Geometric Fox Head -->
-                        <polygon points="50,15 20,40 28,75 50,90 72,75 80,40" fill="none" stroke="#a3c93a" stroke-width="6" stroke-linejoin="round"/>
-                        <polygon points="50,15 20,40 50,55" fill="#a3c93a" opacity="0.85"/>
-                        <polygon points="50,15 80,40 50,55" fill="#e8b84b" opacity="0.9"/>
-                        <polygon points="50,55 28,75 50,90" fill="#a3c93a" opacity="0.6"/>
-                        <polygon points="50,55 72,75 50,90" fill="#e8b84b" opacity="0.65"/>
-                        <circle cx="36" cy="42" r="4" fill="#121512"/>
-                        <circle cx="64" cy="42" r="4" fill="#121512"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                        Sound Fox Notary
-                        <span class="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-brand-lime/10 text-brand-lime border border-brand-lime/30 font-semibold tracking-wider">WA State</span>
-                    </h1>
-                    <p class="text-xs text-gray-400">Interactive Fee Quote Calculator & Audit Summary</p>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <button onclick="resetCalculator()" class="px-3 py-1.5 rounded-lg bg-brand-midOlive hover:bg-brand-lightOlive text-gray-300 hover:text-white border border-white/10 text-xs font-medium transition flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    <span class="hidden sm:inline">Reset</span>
-                </button>
-            </div>
-        </header>
-
-        <!-- CONTENT BODY: 2 COLUMN GRID ON DESKTOP -->
-        <main class="w-full flex-grow p-3 sm:p-6 lg:p-8 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-
-            <!-- LEFT SIDE: CALCULATOR CONTROLS (8 Cols on Desktop) -->
-            <section class="lg:col-span-7 flex flex-col gap-6">
-
-                <!-- OPTIONAL CLIENT INFORMATION BANNER -->
-                <div class="bg-brand-panel border border-brand-border/60 rounded-2xl p-4 sm:p-5 shadow-lg relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-brand-lime"></div>
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                        <label class="text-xs uppercase tracking-wider font-semibold text-brand-lime flex items-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            Client / Quote Reference (Optional)
-                        </label>
-                        <span id="quote-timestamp" class="font-mono text-[11px] text-gray-400 bg-black/40 px-2 py-0.5 rounded border border-white/5">Ref: SFN-2026-001</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <input type="text" id="client-name" placeholder="Client / Escrow Name" oninput="calculateQuote()" class="w-full bg-[#121512] border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-brand-lime transition placeholder-gray-500">
-                        <input type="text" id="quote-notes" placeholder="Notes (e.g. Loan Signing, Deed, Will)" oninput="calculateQuote()" class="w-full bg-[#121512] border border-white/10 rounded-xl px-3.5 py-2 text-sm text-white focus:outline-none focus:border-brand-lime transition placeholder-gray-500">
-                    </div>
-                </div>
-
-                <!-- 1. SERVICE / BASE FEE SELECTOR -->
-                <div class="bg-brand-panel border border-brand-border rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-sm uppercase tracking-wider font-bold text-white flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand-lime text-black font-extrabold text-xs flex items-center justify-center">1</span>
-                            Select Notary Service & Transit Tier
-                        </h2>
-                    </div>
-
-                    <!-- Service Dropdown Select -->
-                    <div class="relative">
-                        <select id="service-select" onchange="onServiceChange()" class="w-full bg-brand-darkOlive border border-brand-border rounded-xl px-4 py-3.5 text-white font-medium text-sm sm:text-base focus:outline-none focus:border-brand-lime focus:ring-1 focus:ring-brand-lime transition appearance-none cursor-pointer pr-10">
-                            <option value="ron_standard" selected>Standard Digital RON — $45.00 ($25 Act + $20 ID Proofing)</option>
-                            <option value="ron_priority">Priority / On-Demand RON — $65.00 ($25 Act + $20 Rush + $20 ID Proofing)</option>
-                            <option value="ipen_standard">Mobile IPEN (Weekends Only) — $80.00 ($25 Act + $20 ID + $35 Transit)</option>
-                            <option value="ipen_rideshare">Mobile IPEN (Rideshare Tier) — $100.00+ ($25 Act + $20 ID + $55+ Travel)</option>
-                            <option value="paper_standard">Mobile Pen & Paper (Weekends Only) — $50.00 ($15 Act + $35 Transit)</option>
-                            <option value="paper_rideshare">Mobile Pen & Paper (Rideshare Tier) — $65.00+ ($15 Act + $50+ Travel)</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-brand-lime">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
-                    </div>
-
-                    <!-- Service Detail Cards Preview -->
-                    <div id="service-description-box" class="mt-4 p-3.5 rounded-xl bg-brand-darkOlive/60 border border-white/5 text-xs text-gray-300 flex flex-wrap gap-2 items-center justify-between">
-                        <!-- Populated by JS -->
-                    </div>
-
-                    <!-- ADJUSTABLE RIDESHARE TRAVEL SLIDER (Visible when Rideshare Tier is selected) -->
-                    <div id="rideshare-slider-container" class="mt-4 p-4 rounded-xl bg-brand-midOlive/80 border border-brand-goldBorder hidden">
-                        <div class="flex items-center justify-between mb-2">
-                            <label class="text-xs font-semibold text-brand-gold uppercase tracking-wider flex items-center gap-1.5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                                Adjustable Rideshare Travel Fee
-                            </label>
-                            <span id="rideshare-value-display" class="font-mono text-sm font-bold text-brand-gold bg-black/60 px-2.5 py-0.5 rounded border border-brand-gold/40">$55.00</span>
-                        </div>
-                        <input type="range" id="rideshare-slider" min="55" max="80" step="1" value="55" oninput="onRideshareSliderChange(this.value)" class="w-full accent-brand-gold bg-black/40 h-2 rounded-lg cursor-pointer">
-                        <div class="flex justify-between text-[10px] font-mono text-gray-400 mt-1">
-                            <span id="slider-min-label">$55 Base</span>
-                            <span>$80 Max Cap</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. PRIMARY SIGNATURES SELECTOR -->
-                <div class="bg-brand-panel border border-brand-border rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-                        <h2 class="text-sm uppercase tracking-wider font-bold text-white flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand-lime text-black font-extrabold text-xs flex items-center justify-center">2</span>
-                            Primary Signatures (1 to 5)
-                        </h2>
-                        <span class="text-xs text-gray-400 italic">1st signature included in base</span>
-                    </div>
-
-                    <!-- Button Pills Grid for 1-5 Signatures -->
-                    <div class="grid grid-cols-5 gap-2">
-                        <button type="button" onclick="setPrimarySignatures(1)" id="sig-btn-1" class="sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-lime text-black border-brand-lime shadow-md">
-                            1
-                            <span class="block text-[10px] font-normal opacity-80">Incl.</span>
-                        </button>
-                        <button type="button" onclick="setPrimarySignatures(2)" id="sig-btn-2" class="sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">
-                            2
-                            <span class="block text-[10px] font-normal text-gray-400">+1 Add'l</span>
-                        </button>
-                        <button type="button" onclick="setPrimarySignatures(3)" id="sig-btn-3" class="sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">
-                            3
-                            <span class="block text-[10px] font-normal text-gray-400">+2 Add'l</span>
-                        </button>
-                        <button type="button" onclick="setPrimarySignatures(4)" id="sig-btn-4" class="sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">
-                            4
-                            <span class="block text-[10px] font-normal text-gray-400">+3 Add'l</span>
-                        </button>
-                        <button type="button" onclick="setPrimarySignatures(5)" id="sig-btn-5" class="sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">
-                            5
-                            <span class="block text-[10px] font-normal text-gray-400">+4 Add'l</span>
-                        </button>
-                    </div>
-
-                    <p id="primary-rate-note" class="mt-3 text-xs text-brand-lime font-mono bg-brand-darkOlive/80 px-3 py-2 rounded-lg border border-brand-lime/20 flex items-center justify-between">
-                        <span>Statutory Additional Rate:</span>
-                        <strong id="primary-rate-display">$25.00 / additional signature</strong>
-                    </p>
-                </div>
-
-                <!-- 3. WITNESS SIGNATURES & BILLING OPTIONS -->
-                <div class="bg-brand-panel border border-brand-border rounded-2xl p-4 sm:p-6 shadow-lg">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-                        <h2 class="text-sm uppercase tracking-wider font-bold text-white flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand-lime text-black font-extrabold text-xs flex items-center justify-center">3</span>
-                            Witness Signatures & Platform Options
-                        </h2>
-                    </div>
-
-                    <!-- Witness Count Selector Pills (0 to 5) -->
-                    <div class="grid grid-cols-6 gap-1.5 sm:gap-2 mb-4">
-                        <button type="button" onclick="setWitnessCount(0)" id="wit-btn-0" class="wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-lime text-black border-brand-lime shadow-md">0</button>
-                        <button type="button" onclick="setWitnessCount(1)" id="wit-btn-1" class="wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">1</button>
-                        <button type="button" onclick="setWitnessCount(2)" id="wit-btn-2" class="wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">2</button>
-                        <button type="button" onclick="setWitnessCount(3)" id="wit-btn-3" class="wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">3</button>
-                        <button type="button" onclick="setWitnessCount(4)" id="wit-btn-4" class="wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">4</button>
-                        <button type="button" onclick="setWitnessCount(5)" id="wit-btn-5" class="wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40">5</button>
-                    </div>
-
-                    <!-- Witness Options Container (Revealed or Active) -->
-                    <div id="witness-options-panel" class="space-y-3 pt-2">
-                        <!-- Witness Billing Type Selector -->
-                        <div class="space-y-2">
-                            <label class="text-xs uppercase tracking-wider text-gray-400 font-semibold block">Witness Billing Type</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                <label id="wit-type-notarized-label" class="flex items-start gap-3 p-3 rounded-xl border border-brand-lime/50 bg-brand-darkOlive cursor-pointer transition hover:bg-brand-midOlive">
-                                    <input type="radio" name="witness-type" id="wit-type-notarized" value="notarized" checked onchange="calculateQuote()" class="mt-0.5 accent-brand-lime">
-                                    <div class="text-xs">
-                                        <div class="font-semibold text-white">Notarized Witness Signature</div>
-                                        <div class="text-gray-400 font-mono mt-0.5">$15.00 Statutory Act each</div>
-                                    </div>
-                                </label>
-                                <label id="wit-type-unnotarized-label" class="flex items-start gap-3 p-3 rounded-xl border border-white/10 bg-brand-darkOlive cursor-pointer transition hover:bg-brand-midOlive">
-                                    <input type="radio" name="witness-type" id="wit-type-unnotarized" value="unnotarized" onchange="calculateQuote()" class="mt-0.5 accent-brand-lime">
-                                    <div class="text-xs">
-                                        <div class="font-semibold text-white">Unnotarized / Doc Only Witness</div>
-                                        <div class="text-gray-400 font-mono mt-0.5">$0 Notary Statutory Fee</div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <!-- BlueNotary On-Demand Witness Toggle (Only relevant when RON selected) -->
-                        <div id="bluenotary-toggle-container" class="p-3.5 rounded-xl bg-brand-midOlive border border-brand-border/40 flex items-center justify-between transition">
-                            <div class="pr-2">
-                                <div class="text-xs font-semibold text-white flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
-                                    BlueNotary On-Demand Witness
-                                </div>
-                                <div class="text-[11px] text-gray-400 mt-0.5">Platform fee of +$10/witness applied for provided witnesses</div>
-                            </div>
-                            <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                                <input type="checkbox" id="bluenotary-witness-toggle" onchange="calculateQuote()" class="sr-only peer">
-                                <div class="w-11 h-6 bg-black/60 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-gold"></div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. CUSTOM DISCOUNTS / ADJUSTMENTS (COLLAPSIBLE / ACCORDION) -->
-                <div class="bg-brand-panel border border-brand-border/60 rounded-2xl p-4 shadow-md">
-                    <button type="button" onclick="toggleAdjustments()" class="w-full flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-gray-300 hover:text-brand-lime transition">
-                        <span class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-brand-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-                            Optional Custom Discounts & Printing Surcharges
-                        </span>
-                        <svg id="adj-chevron" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    
-                    <div id="adjustments-panel" class="hidden pt-4 space-y-3">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-[11px] text-gray-400 block mb-1">Custom Fee Discount ($)</label>
-                                <input type="number" id="discount-amount" min="0" step="5" placeholder="0.00" oninput="calculateQuote()" class="w-full bg-[#121512] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-brand-lime">
-                            </div>
-                            <div>
-                                <label class="text-[11px] text-gray-400 block mb-1">Printing / Courier Surcharge ($)</label>
-                                <input type="number" id="surcharge-amount" min="0" step="5" placeholder="0.00" oninput="calculateQuote()" class="w-full bg-[#121512] border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-brand-lime">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
-            <!-- RIGHT SIDE: LIVE ITEMIZED QUOTE DISPLAY & RECEIPT (5 Cols on Desktop) -->
-            <section class="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-24">
-
-                <!-- HERO TOTAL PRICE CARD -->
-                <div class="bg-gradient-to-b from-brand-midOlive to-brand-darkOlive border-2 border-brand-gold/60 rounded-2xl p-6 shadow-2xl relative overflow-hidden gold-glow">
-                    <!-- Background Decorative Fox Watermark -->
-                    <svg viewBox="0 0 100 100" class="absolute -right-6 -bottom-6 w-40 h-40 opacity-5 text-brand-gold pointer-events-none" fill="currentColor">
-                        <polygon points="50,15 20,40 28,75 50,90 72,75 80,40"/>
-                    </svg>
-
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs uppercase tracking-widest font-bold text-brand-gold">Total Client Quote</span>
-                        <span id="service-badge" class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-brand-gold/20 text-brand-gold border border-brand-gold/40">
-                            STANDARD RON
-                        </span>
-                    </div>
-
-                    <!-- BIG HERO PRICE DISPLAY -->
-                    <div class="my-3 flex items-baseline gap-2">
-                        <span class="text-4xl sm:text-5xl font-black font-mono text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-yellow-200 to-brand-lime tracking-tight" id="hero-total-price">
-                            $45.00
-                        </span>
-                        <span class="text-xs text-gray-400 font-mono">USD</span>
-                    </div>
-
-                    <p class="text-xs text-gray-300 border-t border-white/10 pt-3 flex items-center justify-between" id="hero-subtext">
-                        <span>Compliant WA Statutory Pricing</span>
-                        <span class="text-brand-lime font-mono font-semibold" id="total-sigs-count">1 Signature Total</span>
-                    </p>
-                </div>
-
-                <!-- ITEMIZED RECEIPT BREAKDOWN CARD -->
-                <div class="bg-brand-panel border border-brand-border rounded-2xl p-5 shadow-lg flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
-                            <h3 class="text-xs uppercase tracking-wider font-bold text-gray-200 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-brand-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                Itemized Audit Breakdown
-                            </h3>
-                            <span class="text-[10px] font-mono text-gray-400">All fees USD</span>
-                        </div>
-
-                        <!-- RECEIPT ITEMS TABLE LIST -->
-                        <div id="receipt-items-list" class="space-y-2.5 text-xs font-mono">
-                            <!-- Populated dynamically via JS -->
-                        </div>
-
-                        <!-- TOTAL SUMMARY LINE -->
-                        <div class="mt-4 pt-3 border-t border-dashed border-white/20 flex items-center justify-between text-sm font-mono font-bold">
-                            <span class="text-white">Estimated Quote Total</span>
-                            <span class="text-brand-gold text-base" id="receipt-total-price">$45.00</span>
-                        </div>
-                    </div>
-
-                    <!-- ACTION BUTTONS -->
-                    <div class="mt-6 space-y-2.5">
-                        <!-- Primary Copy Button -->
-                        <button onclick="copyQuoteSummary()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-brand-gold to-yellow-500 hover:from-yellow-400 hover:to-brand-gold text-black font-extrabold text-sm tracking-wide shadow-lg hover:shadow-brand-gold/30 transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-                            <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
-                            Copy Client-Ready Quote
-                        </button>
-
-                        <!-- Copy Detailed Internal Audit -->
-                        <button onclick="copyDetailedAudit()" class="w-full py-2.5 px-4 rounded-xl bg-brand-darkOlive hover:bg-brand-midOlive text-brand-lime border border-brand-lime/30 font-semibold text-xs transition flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                            Copy Itemized Audit Log
-                        </button>
-                    </div>
-                </div>
-
-                <!-- FOOTER / STATUTORY NOTICE -->
-                <div class="text-[11px] text-gray-400 leading-relaxed bg-brand-panel/40 p-3.5 rounded-xl border border-white/5">
-                    <p class="font-semibold text-gray-300 mb-1 flex items-center gap-1">
-                        <svg class="w-3.5 h-3.5 text-brand-lime" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Washington Statutory Fee Compliance
-                    </p>
-                    <p>Quotes strictly comply with Washington State Notary Public fee regulations (RCW 42.45 & WAC 308-30). Statutory notarial acts are capped at $25.00/act for RON and $15.00/act for paper. Non-notarial travel & identity proofing fees are itemized separately.</p>
-                </div>
-
-            </section>
-        </main>
-
-        <!-- FOOTER BAR -->
-        <footer class="w-full border-t border-white/5 py-4 px-6 text-center text-xs text-gray-400 bg-brand-charcoal">
-            Sound Fox Notary &copy; 2026 — Remote Online & Mobile Notary Services — Washington State
-        </footer>
-    </div>
-
-    <!-- MOBILE STICKY BOTTOM DRAWER BAR (Only visible on small screens) -->
-    <div class="lg:hidden fixed bottom-0 left-0 right-0 bg-brand-darkOlive/95 backdrop-blur-md border-t border-brand-goldBorder p-3 px-4 z-40 flex items-center justify-between shadow-2xl">
         <div>
-            <div class="text-[10px] uppercase tracking-wider text-gray-400">Total Quote</div>
-            <div id="mobile-sticky-price" class="text-2xl font-black font-mono text-brand-gold">$45.00</div>
+          <h1 class="font-serif text-lg sm:text-xl font-bold tracking-wide text-gold-300 flex items-center gap-2">
+            SOUND FOX NOTARY
+            <span class="text-[10px] font-sans font-semibold uppercase tracking-widest px-2 py-0.5 rounded bg-gold-500/20 text-gold-300 border border-gold-400/30">WA State</span>
+          </h1>
+          <p class="text-xs text-parchment-200 font-light">Official Fee Quote & Travel Calculator</p>
         </div>
-        <div class="flex items-center gap-2">
-            <button onclick="copyQuoteSummary()" class="py-2.5 px-4 rounded-xl bg-brand-gold text-black font-bold text-xs shadow-md flex items-center gap-1.5">
-                <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                Copy Quote
-            </button>
+      </div>
+
+      <!-- Header Controls: Quick Presets & Theme Switcher -->
+      <div class="flex items-center gap-2 sm:gap-3 ml-auto">
+        <button id="btnDemo98155" onclick="applyDemo98155Preset()" class="text-xs px-3 py-1.5 rounded-lg bg-oxblood-900 hover:bg-oxblood-700 text-gold-300 border border-gold-500/40 font-medium transition-all shadow-sm flex items-center gap-1.5">
+          <span>📍</span> <span>98155 Demo</span>
+        </button>
+        <button id="btnReset" onclick="resetCalculator()" class="text-xs px-2.5 py-1.5 rounded-lg bg-oxblood-900/60 hover:bg-oxblood-900 text-stone-300 border border-stone-600 font-medium transition-all">
+          Reset
+        </button>
+
+        <!-- Dynamic Theme Selector -->
+        <div class="relative inline-flex bg-oxblood-900/80 p-1 rounded-lg border border-gold-500/30">
+          <button onclick="setTheme('light')" id="themeBtnLight" title="Light Theme (Ivory & Crimson)" class="p-1.5 rounded text-xs transition-colors text-stone-400 hover:text-gold-300">
+            ☀️ <span class="hidden sm:inline ml-1 font-mono text-[11px]">Light</span>
+          </button>
+          <button onclick="setTheme('dark')" id="themeBtnDark" title="Dark Theme (Deep Oxblood & Gold)" class="p-1.5 rounded text-xs transition-colors text-stone-400 hover:text-gold-300">
+            🌙 <span class="hidden sm:inline ml-1 font-mono text-[11px]">Dark</span>
+          </button>
+          <button onclick="setTheme('auto')" id="themeBtnAuto" title="Auto (System Theme)" class="p-1.5 rounded text-xs transition-colors text-stone-400 hover:text-gold-300">
+            💻 <span class="hidden sm:inline ml-1 font-mono text-[11px]">Auto</span>
+          </button>
         </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN APP CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 pb-safe">
+
+    <!-- LEFT COLUMN: CONTROLS & OPTIONS (8 cols on lg) -->
+    <div class="lg:col-span-7 space-y-6">
+
+      <!-- SECTION 1: SERVICE TIER SELECTION -->
+      <section class="bg-white dark:bg-oxblood-900/90 rounded-2xl p-5 border border-stone-200 dark:border-gold-500/20 shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-serif text-base sm:text-lg font-bold text-oxblood-800 dark:text-gold-300 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gold-400/20 text-gold-600 dark:text-gold-400 text-xs flex items-center justify-center font-bold">1</span>
+            Select Primary Service Tier
+          </h2>
+          <span class="text-xs font-mono text-stone-500 dark:text-parchment-300">Base Rates</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="serviceTierGrid">
+
+          <!-- Standard RON -->
+          <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all bg-parchment-50/50 dark:bg-oxblood-950/40 border-stone-200 dark:border-oxblood-700 hover:border-gold-400" id="cardTierStandardRon">
+            <input type="radio" name="serviceTier" value="standard_ron" class="sr-only" onchange="calculateTotal()" checked />
+            <div class="flex justify-between items-start mb-1">
+              <span class="font-bold text-sm text-oxblood-900 dark:text-parchment-50">Standard Digital RON</span>
+              <span class="font-mono font-bold text-sm text-gold-600 dark:text-gold-400">$45.00</span>
+            </div>
+            <p class="text-xs text-stone-500 dark:text-parchment-300">Remote Online Notarization session</p>
+            <div class="mt-2 text-[11px] font-mono text-stone-400 dark:text-stone-400">
+              Breakdown: $25 Act + $20 ID Proofing
+            </div>
+          </label>
+
+          <!-- Priority RON -->
+          <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all bg-parchment-50/50 dark:bg-oxblood-950/40 border-stone-200 dark:border-oxblood-700 hover:border-gold-400" id="cardTierPriorityRon">
+            <input type="radio" name="serviceTier" value="priority_ron" class="sr-only" onchange="calculateTotal()" />
+            <div class="flex justify-between items-start mb-1">
+              <span class="font-bold text-sm text-oxblood-900 dark:text-parchment-50 flex items-center gap-1.5">
+                Priority RON
+                <span class="text-[10px] bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 px-1.5 py-0.2 rounded font-mono font-normal">Rush</span>
+              </span>
+              <span class="font-mono font-bold text-sm text-gold-600 dark:text-gold-400">$65.00</span>
+            </div>
+            <p class="text-xs text-stone-500 dark:text-parchment-300">On-demand expedited digital dispatch</p>
+            <div class="mt-2 text-[11px] font-mono text-stone-400 dark:text-stone-400">
+              Breakdown: $25 Act + $20 ID + $15 Rush + $5 Priority
+            </div>
+          </label>
+
+          <!-- Mobile IPEN -->
+          <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all bg-parchment-50/50 dark:bg-oxblood-950/40 border-stone-200 dark:border-oxblood-700 hover:border-gold-400" id="cardTierMobileIpen">
+            <input type="radio" name="serviceTier" value="mobile_ipen" class="sr-only" onchange="calculateTotal()" />
+            <div class="flex justify-between items-start mb-1">
+              <span class="font-bold text-sm text-oxblood-900 dark:text-parchment-50">Mobile IPEN</span>
+              <span class="font-mono font-bold text-sm text-gold-600 dark:text-gold-400">$45.00 <span class="text-xs font-normal text-stone-400">+ Travel</span></span>
+            </div>
+            <p class="text-xs text-stone-500 dark:text-parchment-300">In-person Electronic (Weekends Only)</p>
+            <div class="mt-2 text-[11px] font-mono text-stone-400 dark:text-stone-400">
+              Breakdown: $25 Act + $20 ID Proofing
+            </div>
+          </label>
+
+          <!-- Mobile Pen & Paper -->
+          <label class="relative flex flex-col p-4 rounded-xl border-2 cursor-pointer transition-all bg-parchment-50/50 dark:bg-oxblood-950/40 border-stone-200 dark:border-oxblood-700 hover:border-gold-400" id="cardTierMobilePaper">
+            <input type="radio" name="serviceTier" value="mobile_paper" class="sr-only" onchange="calculateTotal()" />
+            <div class="flex justify-between items-start mb-1">
+              <span class="font-bold text-sm text-oxblood-900 dark:text-parchment-50">Mobile Pen & Paper</span>
+              <span class="font-mono font-bold text-sm text-gold-600 dark:text-gold-400">$15.00 <span class="text-xs font-normal text-stone-400">+ Travel</span></span>
+            </div>
+            <p class="text-xs text-stone-500 dark:text-parchment-300">Traditional Ink (Weekends Only)</p>
+            <div class="mt-2 text-[11px] font-mono text-stone-400 dark:text-stone-400">
+              Breakdown: $15 Statutory Act
+            </div>
+          </label>
+
+        </div>
+      </section>
+
+      <!-- SECTION 2: RIDESHARE & TRANSIT TRAVEL CALCULATOR -->
+      <section id="travelSection" class="bg-white dark:bg-oxblood-900/90 rounded-2xl p-5 border border-stone-200 dark:border-gold-500/20 shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-serif text-base sm:text-lg font-bold text-oxblood-800 dark:text-gold-300 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gold-400/20 text-gold-600 dark:text-gold-400 text-xs flex items-center justify-center font-bold">2</span>
+            Travel & Location Calculator
+          </h2>
+          <span class="text-xs px-2 py-0.5 rounded bg-stone-100 dark:bg-oxblood-800 text-stone-600 dark:text-parchment-200 font-mono">Mobile Services</span>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Destination Tag Input -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-parchment-300 mb-1">Destination ZIP / City</label>
+              <input type="text" id="destZipInput" value="98155 (Shoreline)" oninput="calculateTotal()" class="w-full px-3 py-2 text-sm rounded-lg border border-stone-300 dark:border-oxblood-700 bg-white dark:bg-oxblood-950 text-stone-800 dark:text-parchment-100 focus:ring-2 focus:ring-gold-400 outline-none" placeholder="e.g. 98155" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-parchment-300 mb-1">Travel Rate Method</label>
+              <div class="grid grid-cols-2 gap-1 bg-stone-100 dark:bg-oxblood-950 p-1 rounded-lg border border-stone-200 dark:border-oxblood-700">
+                <button type="button" id="btnTravelTypeFlat" onclick="setTravelType('flat')" class="py-1.5 text-xs font-medium rounded transition-all">
+                  Standard ($35)
+                </button>
+                <button type="button" id="btnTravelTypeRideshare" onclick="setTravelType('rideshare')" class="py-1.5 text-xs font-medium rounded transition-all">
+                  Rideshare Fare
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Custom Rideshare Options Panel (Visible when rideshare selected) -->
+          <div id="ridesharePanel" class="p-4 rounded-xl bg-gold-50/50 dark:bg-oxblood-950/80 border border-gold-400/30 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-oxblood-900 dark:text-gold-300 mb-1">Rideshare Fare Amount ($)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-stone-400 text-sm font-mono">$</span>
+                  <input type="number" id="rideshareFareInput" step="0.01" value="24.33" oninput="calculateTotal()" class="w-full pl-7 pr-3 py-2 text-sm font-mono rounded-lg border border-stone-300 dark:border-oxblood-700 bg-white dark:bg-oxblood-900 text-stone-800 dark:text-parchment-100 focus:ring-2 focus:ring-gold-400 outline-none" />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-oxblood-900 dark:text-gold-300 mb-1">Fare Calculation Mode</label>
+                <select id="fareModeSelect" onchange="calculateTotal()" class="w-full px-3 py-2 text-xs rounded-lg border border-stone-300 dark:border-oxblood-700 bg-white dark:bg-oxblood-900 text-stone-800 dark:text-parchment-100 focus:ring-2 focus:ring-gold-400 outline-none">
+                  <option value="oneway">One-Way Fare (Auto 2x Round-Trip)</option>
+                  <option value="roundtrip">Total Round-Trip Fare (1x)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Wait / Surge Buffer Switch -->
+            <div class="flex items-center justify-between pt-1">
+              <label for="toggleSurgeBuffer" class="text-xs text-stone-700 dark:text-parchment-200 flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="toggleSurgeBuffer" onchange="calculateTotal()" class="w-4 h-4 rounded text-gold-500 focus:ring-gold-400 border-stone-300" checked />
+                <span>Add 10% Wait / Peak Surge Buffer</span>
+              </label>
+              <span id="surgeBufferCalculatedText" class="text-xs font-mono text-gold-600 dark:text-gold-400">+$4.87</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: WITNESS & BLUENOTARY POOL CONTROLS -->
+      <section class="bg-white dark:bg-oxblood-900/90 rounded-2xl p-5 border border-stone-200 dark:border-gold-500/20 shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-serif text-base sm:text-lg font-bold text-oxblood-800 dark:text-gold-300 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gold-400/20 text-gold-600 dark:text-gold-400 text-xs flex items-center justify-center font-bold">3</span>
+            Witness & Open Call Pool
+          </h2>
+          <span class="text-xs font-mono px-2 py-0.5 rounded bg-oxblood-800/10 dark:bg-gold-500/20 text-oxblood-900 dark:text-gold-300">WAC 308-30-220 Compliance</span>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Statutory Witness Counter -->
+          <div class="p-4 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-sm text-oxblood-900 dark:text-parchment-50">Witnessing / Attesting Signature</span>
+                <span id="witnessStatutoryBadge" class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-gold-400/20 text-gold-700 dark:text-gold-300 border border-gold-500/30">
+                  WAC 308-30-220: $25.00/act
+                </span>
+              </div>
+              <p class="text-xs text-stone-500 dark:text-parchment-300 mt-0.5">Physical or digital witnessing required by document terms</p>
+            </div>
+
+            <!-- Stepper controls -->
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="changeCounter('witnessCount', -1)" class="w-8 h-8 rounded-lg bg-stone-200 dark:bg-oxblood-800 text-stone-800 dark:text-parchment-100 font-bold hover:bg-gold-400 hover:text-oxblood-900 transition-colors flex items-center justify-center text-base">
+                -
+              </button>
+              <span id="witnessCountDisplay" class="w-6 text-center font-mono font-bold text-base text-oxblood-900 dark:text-gold-300">0</span>
+              <button type="button" onclick="changeCounter('witnessCount', 1)" class="w-8 h-8 rounded-lg bg-stone-200 dark:bg-oxblood-800 text-stone-800 dark:text-parchment-100 font-bold hover:bg-gold-400 hover:text-oxblood-900 transition-colors flex items-center justify-center text-base">
+                +
+              </button>
+            </div>
+          </div>
+
+          <!-- BlueNotary Open Witness Call Pool Switch -->
+          <div class="p-4 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-start gap-2.5">
+                <input type="checkbox" id="toggleBnPool" onchange="calculateTotal()" class="mt-1 w-4 h-4 rounded text-gold-500 focus:ring-gold-400 border-stone-300" />
+                <div>
+                  <label for="toggleBnPool" class="font-bold text-sm text-oxblood-900 dark:text-parchment-50 cursor-pointer flex items-center gap-2">
+                    BlueNotary Open Witness Call Pool
+                    <span class="text-[10px] bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200 px-1.5 py-0.2 rounded font-mono font-normal">RON On-Demand</span>
+                  </label>
+                  <p class="text-xs text-stone-500 dark:text-parchment-300 mt-0.5">Dispatches an on-demand witness from the BlueNotary network pool</p>
+                </div>
+              </div>
+              <span class="font-mono font-bold text-sm text-gold-600 dark:text-gold-400" id="bnPoolDisplayFee">$10.00</span>
+            </div>
+
+            <!-- Custom BN Pool Fee Input -->
+            <div id="bnPoolFeeInputWrapper" class="hidden flex items-center justify-between text-xs pt-2 border-t border-stone-200 dark:border-oxblood-800">
+              <span class="text-stone-600 dark:text-parchment-300">Pass-Through Pool Fee ($):</span>
+              <input type="number" id="bnPoolFeeInput" step="1.00" value="10.00" oninput="calculateTotal()" class="w-24 px-2 py-1 text-right font-mono text-xs rounded border border-stone-300 dark:border-oxblood-700 bg-white dark:bg-oxblood-900 text-stone-800 dark:text-parchment-100 outline-none" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: ADDITIONAL STAMPS, SIGNERS & ADD-ONS -->
+      <section class="bg-white dark:bg-oxblood-900/90 rounded-2xl p-5 border border-stone-200 dark:border-gold-500/20 shadow-md">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="font-serif text-base sm:text-lg font-bold text-oxblood-800 dark:text-gold-300 flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-gold-400/20 text-gold-600 dark:text-gold-400 text-xs flex items-center justify-center font-bold">4</span>
+            Additional Acts, Signers & Options
+          </h2>
+          <span class="text-xs font-mono text-stone-500 dark:text-parchment-300">Itemized Add-Ons</span>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Stepper Grid: Extra Acts & Extra Signers -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            
+            <!-- Extra Acts / Stamps -->
+            <div class="p-3.5 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700 flex items-center justify-between">
+              <div>
+                <span class="block text-xs font-bold text-oxblood-900 dark:text-parchment-50">Additional Acts / Stamps</span>
+                <span id="extraActsRateText" class="text-[11px] font-mono text-stone-500 dark:text-parchment-300">$25.00 each</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="changeCounter('extraActsCount', -1)" class="w-7 h-7 rounded bg-stone-200 dark:bg-oxblood-800 text-stone-800 dark:text-parchment-100 font-bold hover:bg-gold-400 hover:text-oxblood-900 transition-colors flex items-center justify-center text-sm">-</button>
+                <span id="extraActsCountDisplay" class="w-5 text-center font-mono font-bold text-sm text-oxblood-900 dark:text-gold-300">0</span>
+                <button type="button" onclick="changeCounter('extraActsCount', 1)" class="w-7 h-7 rounded bg-stone-200 dark:bg-oxblood-800 text-stone-800 dark:text-parchment-100 font-bold hover:bg-gold-400 hover:text-oxblood-900 transition-colors flex items-center justify-center text-sm">+</button>
+              </div>
+            </div>
+
+            <!-- Extra Signers -->
+            <div class="p-3.5 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700 flex items-center justify-between">
+              <div>
+                <span class="block text-xs font-bold text-oxblood-900 dark:text-parchment-50">Extra Signers</span>
+                <span class="text-[11px] font-mono text-stone-500 dark:text-parchment-300">$20.00 each</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="changeCounter('extraSignersCount', -1)" class="w-7 h-7 rounded bg-stone-200 dark:bg-oxblood-800 text-stone-800 dark:text-parchment-100 font-bold hover:bg-gold-400 hover:text-oxblood-900 transition-colors flex items-center justify-center text-sm">-</button>
+                <span id="extraSignersCountDisplay" class="w-5 text-center font-mono font-bold text-sm text-oxblood-900 dark:text-gold-300">0</span>
+                <button type="button" onclick="changeCounter('extraSignersCount', 1)" class="w-7 h-7 rounded bg-stone-200 dark:bg-oxblood-800 text-stone-800 dark:text-parchment-100 font-bold hover:bg-gold-400 hover:text-oxblood-900 transition-colors flex items-center justify-center text-sm">+</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Quick Toggle Add-Ons -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label class="flex items-center justify-between p-3.5 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700 cursor-pointer">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" id="toggleRush" onchange="calculateTotal()" class="w-4 h-4 rounded text-gold-500 focus:ring-gold-400 border-stone-300" />
+                <span class="text-xs font-bold text-oxblood-900 dark:text-parchment-50">Off-Hours / Expedited Surcharge</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-gold-600 dark:text-gold-400">+$15.00</span>
+            </label>
+
+            <label class="flex items-center justify-between p-3.5 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700 cursor-pointer">
+              <div class="flex items-center gap-2.5">
+                <input type="checkbox" id="togglePrintScan" onchange="calculateTotal()" class="w-4 h-4 rounded text-gold-500 focus:ring-gold-400 border-stone-300" />
+                <span class="text-xs font-bold text-oxblood-900 dark:text-parchment-50">Printing / Scanback Fee</span>
+              </div>
+              <span class="font-mono text-xs font-bold text-gold-600 dark:text-gold-400">+$10.00</span>
+            </label>
+          </div>
+
+          <!-- Custom Line Item Input -->
+          <div class="p-3.5 rounded-xl bg-parchment-50/60 dark:bg-oxblood-950/40 border border-stone-200 dark:border-oxblood-700">
+            <span class="block text-xs font-semibold uppercase tracking-wider text-stone-600 dark:text-parchment-300 mb-2">Custom Line Item / Fee (Optional)</span>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <input type="text" id="customItemLabel" placeholder="Item description (e.g. Courier Fee)" oninput="calculateTotal()" class="sm:col-span-2 px-3 py-1.5 text-xs rounded border border-stone-300 dark:border-oxblood-700 bg-white dark:bg-oxblood-900 text-stone-800 dark:text-parchment-100 outline-none" />
+              <div class="relative">
+                <span class="absolute left-2.5 top-1.5 text-stone-400 text-xs font-mono">$</span>
+                <input type="number" id="customItemAmount" step="0.50" value="0.00" oninput="calculateTotal()" class="w-full pl-6 pr-2 py-1.5 text-xs font-mono rounded border border-stone-300 dark:border-oxblood-700 bg-white dark:bg-oxblood-900 text-stone-800 dark:text-parchment-100 outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
 
-    <!-- JAVASCRIPT APPLICATION LOGIC -->
-    <script>
-        /**
-         * SOUND FOX NOTARY FEE SCHEDULE SPECIFICATION & CONSTANTS
-         */
-        const SERVICES_DATA = {
-            ron_standard: {
-                name: "Standard Digital RON",
-                category: "RON",
-                baseFee: 45.00,
-                baseStatutory: 25.00,
-                idProofing: 20.00,
-                rushFee: 0.00,
-                travelFee: 0.00,
-                addlSigRate: 25.00,
-                isPaper: false,
-                isRideshare: false,
-                desc: "$25 Statutory Act + $20 Identity Proofing & Credential Analysis"
-            },
-            ron_priority: {
-                name: "Priority / On-Demand RON",
-                category: "RON",
-                baseFee: 65.00,
-                baseStatutory: 25.00,
-                idProofing: 20.00,
-                rushFee: 20.00,
-                travelFee: 0.00,
-                addlSigRate: 25.00,
-                isPaper: false,
-                isRideshare: false,
-                desc: "$25 Statutory Act + $20 Expedited Rush Fee + $20 ID Proofing & Credential Analysis"
-            },
-            ipen_standard: {
-                name: "Mobile IPEN (Weekends Only - Standard Transit)",
-                category: "IPEN",
-                baseFee: 80.00,
-                baseStatutory: 25.00,
-                idProofing: 20.00,
-                rushFee: 0.00,
-                travelFee: 35.00,
-                addlSigRate: 25.00,
-                isPaper: false,
-                isRideshare: false,
-                desc: "$25 Statutory Act + $20 ID Proofing + $35 Standard Mobile Travel"
-            },
-            ipen_rideshare: {
-                name: "Mobile IPEN (Weekends Only - Rideshare Tier)",
-                category: "IPEN",
-                baseFee: 100.00,
-                baseStatutory: 25.00,
-                idProofing: 20.00,
-                rushFee: 0.00,
-                travelFee: 55.00, // Default $55, adjustable $55-$80
-                minTravel: 55,
-                maxTravel: 80,
-                addlSigRate: 25.00,
-                isPaper: false,
-                isRideshare: true,
-                desc: "$25 Statutory Act + $20 ID Proofing + $55 to $80 Rideshare Travel"
-            },
-            paper_standard: {
-                name: "Mobile Pen & Paper (Weekends Only - Standard Transit)",
-                category: "Pen & Paper",
-                baseFee: 50.00,
-                baseStatutory: 15.00,
-                idProofing: 0.00,
-                rushFee: 0.00,
-                travelFee: 35.00,
-                addlSigRate: 15.00,
-                isPaper: true,
-                isRideshare: false,
-                desc: "$15 Statutory Act + $35 Standard Mobile Travel"
-            },
-            paper_rideshare: {
-                name: "Mobile Pen & Paper (Weekends Only - Rideshare Tier)",
-                category: "Pen & Paper",
-                baseFee: 65.00,
-                baseStatutory: 15.00,
-                idProofing: 0.00,
-                rushFee: 0.00,
-                travelFee: 50.00, // Default $50, adjustable $50-$80
-                minTravel: 50,
-                maxTravel: 80,
-                addlSigRate: 15.00,
-                isPaper: true,
-                isRideshare: true,
-                desc: "$15 Statutory Act + $50 to $80 Rideshare Travel"
-            }
-        };
+    <!-- RIGHT COLUMN: LIVE BREAKDOWN & CLIENT QUOTE GENERATOR (5 cols on lg) -->
+    <div class="lg:col-span-5 space-y-6">
 
-        // Application State Variables
-        let currentPrimarySigs = 1;
-        let currentWitnessCount = 0;
-        let rideshareTravelFee = 55.00; // Updated when slider moves
-        let calculatedState = {};
+      <div class="sticky top-20 space-y-6">
 
-        // DOM Elements
-        const serviceSelect = document.getElementById('service-select');
-        const serviceDescBox = document.getElementById('service-description-box');
-        const rideshareSliderContainer = document.getElementById('rideshare-slider-container');
-        const rideshareSlider = document.getElementById('rideshare-slider');
-        const rideshareValueDisplay = document.getElementById('rideshare-value-display');
-        const sliderMinLabel = document.getElementById('slider-min-label');
-        const primaryRateDisplay = document.getElementById('primary-rate-display');
-        const bluenotaryWitnessToggle = document.getElementById('bluenotary-witness-toggle');
-        const heroTotalPrice = document.getElementById('hero-total-price');
-        const mobileStickyPrice = document.getElementById('mobile-sticky-price');
-        const receiptTotalPrice = document.getElementById('receipt-total-price');
-        const receiptItemsList = document.getElementById('receipt-items-list');
-        const heroSubtext = document.getElementById('hero-subtext');
-        const serviceBadge = document.getElementById('service-badge');
-        const totalSigsCount = document.getElementById('total-sigs-count');
+        <!-- GRAND TOTAL & BREAKDOWN CARD -->
+        <section class="bg-oxblood-900 text-parchment-50 rounded-2xl p-6 border-2 border-gold-400/40 shadow-xl relative overflow-hidden">
+          
+          <!-- Background Gold Accent Flare -->
+          <div class="absolute -right-12 -top-12 w-32 h-32 rounded-full bg-gold-400/10 blur-2xl pointer-events-none"></div>
 
-        // Initialize App on DOM Load
-        window.addEventListener('DOMContentLoaded', () => {
-            // Set current date in quote ref
-            const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            document.getElementById('quote-timestamp').innerText = `Quote Date: ${dateStr}`;
+          <div class="flex items-center justify-between pb-4 border-b border-gold-500/30">
+            <div>
+              <span class="text-xs uppercase tracking-widest text-gold-400 font-semibold">Total Estimated Quote</span>
+              <h2 id="totalQuoteDisplay" class="font-mono text-3xl sm:text-4xl font-extrabold text-gold-300 mt-1">$45.00</h2>
+            </div>
+            <div class="text-right">
+              <span id="publishedRateRangeBadge" class="inline-block text-[11px] font-mono font-semibold px-2.5 py-1 rounded-full bg-gold-500/20 text-gold-300 border border-gold-400/40">
+                Published Benchmark Match
+              </span>
+            </div>
+          </div>
 
-            onServiceChange();
-        });
+          <!-- Live Itemized Breakdown List -->
+          <div class="py-4 space-y-2.5 text-xs font-mono" id="breakdownList">
+            <!-- Dynamic JS injected lines -->
+          </div>
 
-        // Toggle Optional Adjustments Accordion
-        function toggleAdjustments() {
-            const panel = document.getElementById('adjustments-panel');
-            const chevron = document.getElementById('adj-chevron');
-            if (panel.classList.contains('hidden')) {
-                panel.classList.remove('hidden');
-                chevron.classList.add('rotate-180');
-            } else {
-                panel.classList.add('hidden');
-                chevron.classList.remove('rotate-180');
-            }
+          <!-- Action Buttons -->
+          <div class="pt-4 border-t border-gold-500/30 space-y-2">
+            <button id="btnCopyQuote" onclick="copyClientQuote()" class="w-full py-3 px-4 rounded-xl font-serif font-bold text-sm bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 text-oxblood-950 hover:from-gold-200 hover:to-gold-400 transition-all shadow-lg flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-oxblood-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+              </svg>
+              <span>Copy Client Quote (SMS/Email)</span>
+            </button>
+
+            <!-- Toast / Copy Confirmation Message -->
+            <div id="copyToast" class="hidden text-center text-xs text-gold-300 font-medium py-1.5 px-3 rounded bg-gold-500/20 border border-gold-400/30">
+              ✓ Quote copied to clipboard cleanly!
+            </div>
+          </div>
+
+        </section>
+
+        <!-- FORMATTED TEXT PREVIEW BOX -->
+        <section class="bg-white dark:bg-oxblood-900/90 rounded-2xl p-5 border border-stone-200 dark:border-gold-500/20 shadow-md">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="font-serif text-sm font-bold text-oxblood-900 dark:text-gold-300 uppercase tracking-wider">
+              Client Message Preview
+            </h3>
+            <span class="text-[10px] text-stone-400 font-mono">No Em-Dashes</span>
+          </div>
+          <pre id="quoteTextPreview" class="w-full p-3 rounded-lg bg-parchment-50 dark:bg-oxblood-950 border border-stone-200 dark:border-oxblood-800 text-[11px] font-mono text-stone-700 dark:text-parchment-200 leading-relaxed whitespace-pre-wrap break-words max-h-64 overflow-y-auto">
+          </pre>
+        </section>
+
+        <!-- FOOTER & LEGAL NOTE -->
+        <div class="text-[11px] text-stone-500 dark:text-stone-400 space-y-1 px-1">
+          <p><strong>Sound Fox Notary</strong> | Independent Notary Public Services in Washington State.</p>
+          <p>Notary fees capped under WAC 308-30-220 ($25/act RON or IPEN, $15/act Pen & Paper). Travel and credential proofing are non-statutory service fees agreed upon prior to signing.</p>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- JAVASCRIPT APP LOGIC -->
+  <script>
+    // State variables
+    let currentTheme = 'auto';
+    let travelType = 'flat'; // 'flat' or 'rideshare'
+    let counters = {
+      witnessCount: 0,
+      extraActsCount: 0,
+      extraSignersCount: 0
+    };
+
+    // Initialize application on window load
+    window.onload = function() {
+      initTheme();
+      calculateTotal();
+    };
+
+    // --- THEME MANAGEMENT ---
+    function initTheme() {
+      const savedTheme = localStorage.getItem('soundfox_theme') || 'auto';
+      setTheme(savedTheme);
+    }
+
+    function setTheme(theme) {
+      currentTheme = theme;
+      localStorage.setItem('soundfox_theme', theme);
+
+      const html = document.documentElement;
+      const btnLight = document.getElementById('themeBtnLight');
+      const btnDark = document.getElementById('themeBtnDark');
+      const btnAuto = document.getElementById('themeBtnAuto');
+
+      // Reset button styles
+      [btnLight, btnDark, btnAuto].forEach(btn => {
+        btn.classList.remove('bg-gold-500', 'text-oxblood-950', 'font-bold');
+        btn.classList.add('text-stone-400');
+      });
+
+      let isDark = false;
+
+      if (theme === 'light') {
+        isDark = false;
+        btnLight.classList.add('bg-gold-500', 'text-oxblood-950', 'font-bold');
+      } else if (theme === 'dark') {
+        isDark = true;
+        btnDark.classList.add('bg-gold-500', 'text-oxblood-950', 'font-bold');
+      } else {
+        // Auto
+        btnAuto.classList.add('bg-gold-500', 'text-oxblood-950', 'font-bold');
+        isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      }
+
+      if (isDark) {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+    }
+
+    // --- TRAVEL TYPE SWITCH ---
+    function setTravelType(type) {
+      travelType = type;
+      const btnFlat = document.getElementById('btnTravelTypeFlat');
+      const btnRideshare = document.getElementById('btnTravelTypeRideshare');
+      const ridesharePanel = document.getElementById('ridesharePanel');
+
+      if (type === 'flat') {
+        btnFlat.className = 'py-1.5 text-xs font-medium rounded transition-all bg-gold-400 text-oxblood-950 font-bold shadow-sm';
+        btnRideshare.className = 'py-1.5 text-xs font-medium rounded transition-all text-stone-600 dark:text-parchment-300 hover:text-gold-500';
+        ridesharePanel.classList.add('hidden');
+      } else {
+        btnRideshare.className = 'py-1.5 text-xs font-medium rounded transition-all bg-gold-400 text-oxblood-950 font-bold shadow-sm';
+        btnFlat.className = 'py-1.5 text-xs font-medium rounded transition-all text-stone-600 dark:text-parchment-300 hover:text-gold-500';
+        ridesharePanel.classList.remove('hidden');
+      }
+
+      calculateTotal();
+    }
+
+    // --- COUNTERS STEPPER LOGIC ---
+    function changeCounter(key, delta) {
+      if (counters[key] !== undefined) {
+        counters[key] = Math.max(0, counters[key] + delta);
+        const displayEl = document.getElementById(key + 'Display');
+        if (displayEl) {
+          displayEl.innerText = counters[key];
         }
+        calculateTotal();
+      }
+    }
 
-        // Service Selection Handler
-        function onServiceChange() {
-            const selectedKey = serviceSelect.value;
-            const service = SERVICES_DATA[selectedKey];
+    // --- 98155 DEMO PRESET ---
+    function applyDemo98155Preset() {
+      // Set service tier to Mobile IPEN
+      const radioMobileIpen = document.querySelector('input[name="serviceTier"][value="mobile_ipen"]');
+      if (radioMobileIpen) radioMobileIpen.checked = true;
 
-            // Update Description Box
-            serviceDescBox.innerHTML = `
-                <span class="font-mono text-brand-lime">${service.desc}</span>
-                <span class="px-2 py-0.5 rounded bg-black/40 text-[10px] text-gray-300 border border-white/10">${service.category} Tier</span>
-            `;
+      // Set ZIP & Travel to Rideshare
+      document.getElementById('destZipInput').value = '98155 (Shoreline)';
+      setTravelType('rideshare');
+      document.getElementById('rideshareFareInput').value = '24.33';
+      document.getElementById('fareModeSelect').value = 'oneway';
+      document.getElementById('toggleSurgeBuffer').checked = true;
 
-            // Handle Rideshare Slider Visibility & Bounds
-            if (service.isRideshare) {
-                rideshareSliderContainer.classList.remove('hidden');
-                rideshareSlider.min = service.minTravel;
-                rideshareSlider.max = service.maxTravel;
-                
-                // If switching between IPEN & Paper rideshare, ensure value within bounds
-                if (rideshareTravelFee < service.minTravel || rideshareTravelFee > service.maxTravel) {
-                    rideshareTravelFee = service.minTravel;
-                }
-                rideshareSlider.value = rideshareTravelFee;
-                rideshareValueDisplay.innerText = `$${parseFloat(rideshareTravelFee).toFixed(2)}`;
-                sliderMinLabel.innerText = `$${service.minTravel} Base`;
-            } else {
-                rideshareSliderContainer.classList.add('hidden');
-            }
+      // Counters
+      counters.witnessCount = 1;
+      counters.extraActsCount = 0;
+      counters.extraSignersCount = 0;
+      document.getElementById('witnessCountDisplay').innerText = '1';
+      document.getElementById('extraActsCountDisplay').innerText = '0';
+      document.getElementById('extraSignersCountDisplay').innerText = '0';
 
-            // Update Statutory Rate Note
-            primaryRateDisplay.innerText = `$${service.addlSigRate.toFixed(2)} / additional signature`;
+      // Toggles
+      document.getElementById('toggleBnPool').checked = false;
+      document.getElementById('toggleRush').checked = true;
+      document.getElementById('togglePrintScan').checked = false;
 
-            calculateQuote();
+      // Custom Item
+      document.getElementById('customItemLabel').value = '';
+      document.getElementById('customItemAmount').value = '0.00';
+
+      calculateTotal();
+    }
+
+    // --- RESET CALCULATOR ---
+    function resetCalculator() {
+      const radioStandardRon = document.querySelector('input[name="serviceTier"][value="standard_ron"]');
+      if (radioStandardRon) radioStandardRon.checked = true;
+
+      document.getElementById('destZipInput').value = '98155 (Shoreline)';
+      setTravelType('flat');
+      document.getElementById('rideshareFareInput').value = '24.33';
+      document.getElementById('fareModeSelect').value = 'oneway';
+      document.getElementById('toggleSurgeBuffer').checked = true;
+
+      counters.witnessCount = 0;
+      counters.extraActsCount = 0;
+      counters.extraSignersCount = 0;
+      document.getElementById('witnessCountDisplay').innerText = '0';
+      document.getElementById('extraActsCountDisplay').innerText = '0';
+      document.getElementById('extraSignersCountDisplay').innerText = '0';
+
+      document.getElementById('toggleBnPool').checked = false;
+      document.getElementById('toggleRush').checked = false;
+      document.getElementById('togglePrintScan').checked = false;
+
+      document.getElementById('customItemLabel').value = '';
+      document.getElementById('customItemAmount').value = '0.00';
+
+      calculateTotal();
+    }
+
+    // --- MAIN CALCULATION & QUOTE GENERATION ---
+    function calculateTotal() {
+      const serviceTierInput = document.querySelector('input[name="serviceTier"]:checked');
+      const selectedTier = serviceTierInput ? serviceTierInput.value : 'standard_ron';
+
+      // Update Service Tier Selected Styling Cards
+      ['StandardRon', 'PriorityRon', 'MobileIpen', 'MobilePaper'].forEach(tierName => {
+        const card = document.getElementById('cardTier' + tierName);
+        if (card) {
+          card.classList.remove('border-gold-500', 'bg-gold-50/20', 'dark:bg-oxblood-900');
+          card.classList.add('border-stone-200', 'dark:border-oxblood-700');
         }
+      });
 
-        // Slider Change Handler
-        function onRideshareSliderChange(val) {
-            rideshareTravelFee = parseFloat(val);
-            rideshareValueDisplay.innerText = `$${rideshareTravelFee.toFixed(2)}`;
-            calculateQuote();
+      let currentCardId = 'cardTierStandardRon';
+      if (selectedTier === 'priority_ron') currentCardId = 'cardTierPriorityRon';
+      if (selectedTier === 'mobile_ipen') currentCardId = 'cardTierMobileIpen';
+      if (selectedTier === 'mobile_paper') currentCardId = 'cardTierMobilePaper';
+      
+      const activeCard = document.getElementById(currentCardId);
+      if (activeCard) {
+        activeCard.classList.remove('border-stone-200', 'dark:border-oxblood-700');
+        activeCard.classList.add('border-gold-500', 'bg-gold-50/20', 'dark:bg-oxblood-900');
+      }
+
+      // Determine statutory act rate for current selection
+      const isRemoteOrDigital = (selectedTier === 'standard_ron' || selectedTier === 'priority_ron' || selectedTier === 'mobile_ipen');
+      const statutoryActRate = isRemoteOrDigital ? 25.00 : 15.00;
+
+      // Update Witness Statutory Badge Text
+      const witnessBadge = document.getElementById('witnessStatutoryBadge');
+      if (witnessBadge) {
+        witnessBadge.innerText = `WAC 308-30-220: $${statutoryActRate.toFixed(2)}/act`;
+      }
+
+      // Update Extra Acts Rate Text
+      const extraActsRateText = document.getElementById('extraActsRateText');
+      if (extraActsRateText) {
+        extraActsRateText.innerText = `$${statutoryActRate.toFixed(2)} each`;
+      }
+
+      // Travel Section Visibility / Relevance
+      const isMobileService = (selectedTier === 'mobile_ipen' || selectedTier === 'mobile_paper');
+      const travelSection = document.getElementById('travelSection');
+      if (travelSection) {
+        if (isMobileService) {
+          travelSection.classList.remove('opacity-60');
+        } else {
+          travelSection.classList.add('opacity-60');
         }
+      }
 
-        // Primary Signature Selector Handler (1 to 5)
-        function setPrimarySignatures(num) {
-            currentPrimarySigs = num;
-            for (let i = 1; i <= 5; i++) {
-                const btn = document.getElementById(`sig-btn-${i}`);
-                if (i === num) {
-                    btn.className = "sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-lime text-black border-brand-lime shadow-md active-ring";
-                } else {
-                    btn.className = "sig-btn py-3 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40";
-                }
-            }
-            calculateQuote();
+      // Base Cost Calculation
+      let baseCost = 0.00;
+      let baseTitle = '';
+      let baseBreakdown = [];
+
+      if (selectedTier === 'standard_ron') {
+        baseCost = 45.00;
+        baseTitle = 'Standard Digital RON Session';
+        baseBreakdown.push({ name: 'Statutory Notarial Act (WAC 308-30-220)', cost: 25.00 });
+        baseBreakdown.push({ name: 'Digital ID Proofing & Credential Analysis', cost: 20.00 });
+      } else if (selectedTier === 'priority_ron') {
+        baseCost = 65.00;
+        baseTitle = 'Priority / On-Demand RON Session';
+        baseBreakdown.push({ name: 'Statutory Notarial Act (WAC 308-30-220)', cost: 25.00 });
+        baseBreakdown.push({ name: 'Digital ID Proofing & Credential Analysis', cost: 20.00 });
+        baseBreakdown.push({ name: 'Expedited Rush Dispatch', cost: 15.00 });
+        baseBreakdown.push({ name: 'Priority Handling Fee', cost: 5.00 });
+      } else if (selectedTier === 'mobile_ipen') {
+        baseCost = 45.00;
+        baseTitle = 'Mobile IPEN (In-Person Electronic)';
+        baseBreakdown.push({ name: 'Statutory Notarial Act (WAC 308-30-220)', cost: 25.00 });
+        baseBreakdown.push({ name: 'Digital ID Proofing & Credential Analysis', cost: 20.00 });
+      } else if (selectedTier === 'mobile_paper') {
+        baseCost = 15.00;
+        baseTitle = 'Mobile Pen & Paper (Ink Notarization)';
+        baseBreakdown.push({ name: 'Statutory Notarial Act (WAC 308-30-220)', cost: 15.00 });
+      }
+
+      // Travel Fee Calculation
+      let travelFee = 0.00;
+      let travelLabel = '';
+      const destZip = document.getElementById('destZipInput').value.trim() || '98155';
+
+      if (isMobileService) {
+        if (travelType === 'flat') {
+          travelFee = 35.00;
+          travelLabel = `Standard Travel Fee (${destZip})`;
+        } else {
+          const fareInputVal = parseFloat(document.getElementById('rideshareFareInput').value) || 0;
+          const fareMode = document.getElementById('fareModeSelect').value;
+          const hasSurge = document.getElementById('toggleSurgeBuffer').checked;
+
+          let rawFare = (fareMode === 'oneway') ? (fareInputVal * 2) : fareInputVal;
+          let surgeAmount = hasSurge ? (rawFare * 0.10) : 0;
+          
+          travelFee = rawFare + surgeAmount;
+          
+          // Update calculation text helper
+          const surgeText = document.getElementById('surgeBufferCalculatedText');
+          if (surgeText) {
+            surgeText.innerText = `+$${surgeAmount.toFixed(2)}`;
+          }
+
+          travelLabel = `Rideshare Travel (${destZip})`;
         }
+      }
 
-        // Witness Count Selector Handler (0 to 5)
-        function setWitnessCount(num) {
-            currentWitnessCount = num;
-            for (let i = 0; i <= 5; i++) {
-                const btn = document.getElementById(`wit-btn-${i}`);
-                if (i === num) {
-                    btn.className = "wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-lime text-black border-brand-lime shadow-md active-ring";
-                } else {
-                    btn.className = "wit-btn py-2.5 rounded-xl border text-center font-bold text-sm transition-all bg-brand-darkOlive text-gray-300 border-white/10 hover:border-brand-lime/40";
-                }
-            }
-            calculateQuote();
+      // Witness Fee Calculation
+      const witnessCount = counters.witnessCount;
+      const witnessFeeTotal = witnessCount * statutoryActRate;
+
+      // BlueNotary Pool Toggle
+      const isBnPoolActive = document.getElementById('toggleBnPool').checked;
+      const bnPoolFeeInputWrapper = document.getElementById('bnPoolFeeInputWrapper');
+      let bnPoolFee = 0.00;
+      if (isBnPoolActive) {
+        if (bnPoolFeeInputWrapper) bnPoolFeeInputWrapper.classList.remove('hidden');
+        bnPoolFee = parseFloat(document.getElementById('bnPoolFeeInput').value) || 10.00;
+        document.getElementById('bnPoolDisplayFee').innerText = `$${bnPoolFee.toFixed(2)}`;
+      } else {
+        if (bnPoolFeeInputWrapper) bnPoolFeeInputWrapper.classList.add('hidden');
+      }
+
+      // Additional Acts Calculation
+      const extraActsCount = counters.extraActsCount;
+      const extraActsFeeTotal = extraActsCount * statutoryActRate;
+
+      // Extra Signers Calculation
+      const extraSignersCount = counters.extraSignersCount;
+      const extraSignersFeeTotal = extraSignersCount * 20.00;
+
+      // Toggles
+      const isRushActive = document.getElementById('toggleRush').checked;
+      const rushFee = isRushActive ? 15.00 : 0.00;
+
+      const isPrintScanActive = document.getElementById('togglePrintScan').checked;
+      const printScanFee = isPrintScanActive ? 10.00 : 0.00;
+
+      // Custom Line Item
+      const customLabel = document.getElementById('customItemLabel').value.trim();
+      const customAmount = parseFloat(document.getElementById('customItemAmount').value) || 0;
+
+      // GRAND TOTAL COMPUTATION
+      const grandTotal = baseCost + travelFee + witnessFeeTotal + bnPoolFee + extraActsFeeTotal + extraSignersFeeTotal + rushFee + printScanFee + (customAmount > 0 ? customAmount : 0);
+
+      // Render Grand Total UI
+      document.getElementById('totalQuoteDisplay').innerText = `$${grandTotal.toFixed(2)}`;
+
+      // Render Breakdown HTML List
+      const breakdownContainer = document.getElementById('breakdownList');
+      let listHtml = '';
+
+      // Base breakdown items
+      baseBreakdown.forEach(item => {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• ${item.name}</span>
+            <span class="text-gold-300 font-semibold">$${item.cost.toFixed(2)}</span>
+          </div>
+        `;
+      });
+
+      // Travel Line
+      if (isMobileService && travelFee > 0) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• ${travelLabel}</span>
+            <span class="text-gold-300 font-semibold">$${travelFee.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Witnessing
+      if (witnessCount > 0) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• Witnessing (${witnessCount} act${witnessCount > 1 ? 's' : ''} @ $${statutoryActRate.toFixed(2)})</span>
+            <span class="text-gold-300 font-semibold">$${witnessFeeTotal.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // BN Pool
+      if (isBnPoolActive) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• BlueNotary Open Witness Pool</span>
+            <span class="text-gold-300 font-semibold">$${bnPoolFee.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Additional Acts
+      if (extraActsCount > 0) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• Add'l Notarial Acts (${extraActsCount} @ $${statutoryActRate.toFixed(2)})</span>
+            <span class="text-gold-300 font-semibold">$${extraActsFeeTotal.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Extra Signers
+      if (extraSignersCount > 0) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• Extra Signers (${extraSignersCount} @ $20.00)</span>
+            <span class="text-gold-300 font-semibold">$${extraSignersFeeTotal.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Rush Surcharge
+      if (isRushActive) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• Off-Hours / Rush Surcharge</span>
+            <span class="text-gold-300 font-semibold">$${rushFee.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Print / Scanbacks
+      if (isPrintScanActive) {
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• Document Printing & Scanback</span>
+            <span class="text-gold-300 font-semibold">$${printScanFee.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      // Custom Item
+      if (customAmount > 0) {
+        const itemTitle = customLabel || 'Custom Service Fee';
+        listHtml += `
+          <div class="flex justify-between items-center text-parchment-200">
+            <span>• ${itemTitle}</span>
+            <span class="text-gold-300 font-semibold">$${customAmount.toFixed(2)}</span>
+          </div>
+        `;
+      }
+
+      breakdownContainer.innerHTML = listHtml;
+
+      // Update Benchmark Comparison Badge Text
+      const badge = document.getElementById('publishedRateRangeBadge');
+      if (isMobileService) {
+        if (selectedTier === 'mobile_ipen') {
+          badge.innerText = travelFee >= 35 ? 'Published Mobile IPEN Benchmark Match ($80+)' : 'Mobile IPEN Benchmark ($55 - $80+)';
+        } else {
+          badge.innerText = travelFee >= 35 ? 'Published Pen & Paper Benchmark Match ($50+)' : 'Mobile Paper Benchmark ($50 - $80+)';
         }
+      } else {
+        badge.innerText = selectedTier === 'priority_ron' ? 'Priority RON Benchmark ($65.00)' : 'Standard Digital RON Benchmark ($45.00)';
+      }
 
-        // Master Calculation Function
-        function calculateQuote() {
-            const selectedKey = serviceSelect.value;
-            const service = SERVICES_DATA[selectedKey];
+      // GENERATE CLIENT QUOTE TEXT (STRICTLY NO EM DASHES)
+      generateQuoteText({
+        baseTitle,
+        baseCost,
+        baseBreakdown,
+        isMobileService,
+        travelLabel,
+        travelFee,
+        witnessCount,
+        statutoryActRate,
+        witnessFeeTotal,
+        isBnPoolActive,
+        bnPoolFee,
+        extraActsCount,
+        extraActsFeeTotal,
+        extraSignersCount,
+        extraSignersFeeTotal,
+        isRushActive,
+        rushFee,
+        isPrintScanActive,
+        printScanFee,
+        customLabel,
+        customAmount,
+        grandTotal
+      });
+    }
 
-            // 1. Base Statutory & Service Components
-            const baseStatutory = service.baseStatutory;
-            const idProofing = service.idProofing;
-            const rushFee = service.rushFee;
-            
-            let travelFee = 0;
-            if (service.isRideshare) {
-                travelFee = rideshareTravelFee;
-            } else {
-                travelFee = service.travelFee;
-            }
+    // --- CLIENT QUOTE TEXT GENERATOR (STRICTLY NO EM DASHES) ---
+    function generateQuoteText(data) {
+      let lines = [];
+      lines.push("SOUND FOX NOTARY | OFFICIAL FEE QUOTE");
+      lines.push("------------------------------------");
+      lines.push(`Service: ${data.baseTitle}`);
+      lines.push("");
+      lines.push("ITEMIZATION:");
+      
+      data.baseBreakdown.forEach(item => {
+        lines.push(` * ${item.name}: $${item.cost.toFixed(2)}`);
+      });
 
-            // 2. Primary Signatures Pricing Calculation
-            // First signature included in base. Add'l signatures = (count - 1) * rate
-            const addlPrimaryCount = Math.max(0, currentPrimarySigs - 1);
-            const addlPrimaryRate = service.addlSigRate;
-            const addlPrimaryTotal = addlPrimaryCount * addlPrimaryRate;
+      if (data.isMobileService && data.travelFee > 0) {
+        lines.push(` * ${data.travelLabel}: $${data.travelFee.toFixed(2)}`);
+      }
 
-            // 3. Witness Signatures Pricing Calculation
-            const witnessTypeNotarized = document.getElementById('wit-type-notarized').checked;
-            const witnessStatutoryRate = witnessTypeNotarized ? 15.00 : 0.00;
-            const witnessStatutoryTotal = currentWitnessCount * witnessStatutoryRate;
+      if (data.witnessCount > 0) {
+        lines.push(` * Signature Witnessing (${data.witnessCount} act/s @ $${data.statutoryActRate.toFixed(2)}): $${data.witnessFeeTotal.toFixed(2)}`);
+      }
 
-            // BlueNotary Platform Fee (Only when BlueNotary witness toggle is active & witness count > 0)
-            const isBlueNotaryWitness = bluenotaryWitnessToggle.checked;
-            const witnessPlatformRate = isBlueNotaryWitness ? 10.00 : 0.00;
-            const witnessPlatformTotal = currentWitnessCount * witnessPlatformRate;
+      if (data.isBnPoolActive) {
+        lines.push(` * BlueNotary Open Witness Call Pool: $${data.bnPoolFee.toFixed(2)}`);
+      }
 
-            // 4. Custom Adjustments & Discounts
-            const discountVal = parseFloat(document.getElementById('discount-amount').value) || 0;
-            const surchargeVal = parseFloat(document.getElementById('surcharge-amount').value) || 0;
+      if (data.extraActsCount > 0) {
+        lines.push(` * Additional Notarial Acts (${data.extraActsCount} @ $${data.statutoryActRate.toFixed(2)}): $${data.extraActsFeeTotal.toFixed(2)}`);
+      }
 
-            // Calculate Final Grand Total
-            const grandTotal = Math.max(0, 
-                baseStatutory + 
-                idProofing + 
-                rushFee + 
-                travelFee + 
-                addlPrimaryTotal + 
-                witnessStatutoryTotal + 
-                witnessPlatformTotal + 
-                surchargeVal - 
-                discountVal
-            );
+      if (data.extraSignersCount > 0) {
+        lines.push(` * Extra Signer ID Verification (${data.extraSignersCount} @ $20.00): $${data.extraSignersFeeTotal.toFixed(2)}`);
+      }
 
-            // Store state for copy functions
-            calculatedState = {
-                service,
-                clientName: document.getElementById('client-name').value.trim() || 'Valued Client',
-                notes: document.getElementById('quote-notes').value.trim(),
-                baseStatutory,
-                idProofing,
-                rushFee,
-                travelFee,
-                primarySigs: currentPrimarySigs,
-                addlPrimaryCount,
-                addlPrimaryRate,
-                addlPrimaryTotal,
-                witnessCount: currentWitnessCount,
-                witnessTypeNotarized,
-                witnessStatutoryRate,
-                witnessStatutoryTotal,
-                isBlueNotaryWitness,
-                witnessPlatformRate,
-                witnessPlatformTotal,
-                discountVal,
-                surchargeVal,
-                grandTotal
-            };
+      if (data.isRushActive) {
+        lines.push(` * Off-Hours / Expedited Surcharge: $${data.rushFee.toFixed(2)}`);
+      }
 
-            // Render Results to UI
-            renderUI();
-        }
+      if (data.isPrintScanActive) {
+        lines.push(` * Printing & Scanback Delivery: $${data.printScanFee.toFixed(2)}`);
+      }
 
-        // Render Computed Breakdown to DOM
-        function renderUI() {
-            const state = calculatedState;
-            const formattedTotal = `$${state.grandTotal.toFixed(2)}`;
+      if (data.customAmount > 0) {
+        const title = data.customLabel || 'Custom Service Fee';
+        lines.push(` * ${title}: $${data.customAmount.toFixed(2)}`);
+      }
 
-            heroTotalPrice.innerText = formattedTotal;
-            mobileStickyPrice.innerText = formattedTotal;
-            receiptTotalPrice.innerText = formattedTotal;
-            serviceBadge.innerText = state.service.category;
+      lines.push("------------------------------------");
+      lines.push(`TOTAL ESTIMATED QUOTE: $${data.grandTotal.toFixed(2)}`);
+      lines.push("");
+      lines.push("Notary acts priced pursuant to WA State WAC 308-30-220. Remote/mobile travel & technology fees confirmed prior to booking.");
+      lines.push("Reply to this message to confirm your appointment window.");
 
-            const totalSigs = state.primarySigs + (state.witnessTypeNotarized ? state.witnessCount : 0);
-            totalSigsCount.innerText = `${totalSigs} Notarized Act${totalSigs !== 1 ? 's' : ''}`;
+      const fullQuoteText = lines.join("\n");
+      document.getElementById('quoteTextPreview').innerText = fullQuoteText;
+    }
 
-            // Build Receipt Line Items HTML
-            let itemsHtml = '';
+    // --- COPY TO CLIPBOARD FUNCTION ---
+    function copyClientQuote() {
+      const quoteText = document.getElementById('quoteTextPreview').innerText;
+      
+      if (!quoteText) return;
 
-            // Base Statutory Fee
-            itemsHtml += `
-                <div class="flex justify-between items-center text-gray-200">
-                    <span>• Base Notarial Act (1st Signature)</span>
-                    <span class="text-brand-lime">$${state.baseStatutory.toFixed(2)}</span>
-                </div>
-            `;
+      // Fallback copy using text area execution to handle iframe restrictions reliably
+      const textarea = document.createElement('textarea');
+      textarea.value = quoteText;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      let successful = false;
+      try {
+        successful = document.execCommand('copy');
+      } catch (err) {
+        console.error('ExecCommand copy failed', err);
+      }
+      document.body.removeChild(textarea);
 
-            // ID Proofing Fee if applicable
-            if (state.idProofing > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-300">
-                        <span>• Identity Proofing & Credential Analysis</span>
-                        <span>$${state.idProofing.toFixed(2)}</span>
-                    </div>
-                `;
-            }
+      // Display Toast Confirmation
+      const copyToast = document.getElementById('copyToast');
+      if (copyToast) {
+        copyToast.classList.remove('hidden');
+        copyToast.innerText = successful ? '✓ Quote copied to clipboard cleanly!' : 'Selected text - press Ctrl+C / Cmd+C to copy';
+        setTimeout(() => {
+          copyToast.classList.add('hidden');
+        }, 3000);
+      }
+    }
+  </script>
 
-            // Rush Fee if applicable
-            if (state.rushFee > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-300">
-                        <span>• Expedited Priority Rush Fee</span>
-                        <span>$${state.rushFee.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-
-            // Travel Fee if applicable
-            if (state.travelFee > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-300">
-                        <span>• ${state.service.isRideshare ? 'Rideshare Travel Fee' : 'Standard Mobile Travel'}</span>
-                        <span>$${state.travelFee.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-
-            // Additional Primary Signatures
-            if (state.addlPrimaryCount > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-300">
-                        <span>• Add'l Primary Sigs (${state.addlPrimaryCount} @ $${state.addlPrimaryRate.toFixed(2)})</span>
-                        <span class="text-brand-lime">$${state.addlPrimaryTotal.toFixed(2)}</span>
-                    </div>
-                `;
-            } else {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-400">
-                        <span>• Add'l Primary Sigs (0)</span>
-                        <span>$0.00</span>
-                    </div>
-                `;
-            }
-
-            // Witness Signatures
-            if (state.witnessCount > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-300">
-                        <span>• Witness Sigs (${state.witnessCount} ${state.witnessTypeNotarized ? 'Notarized' : 'Doc-Only'})</span>
-                        <span>$${state.witnessStatutoryTotal.toFixed(2)}</span>
-                    </div>
-                `;
-                
-                if (state.isBlueNotaryWitness) {
-                    itemsHtml += `
-                        <div class="flex justify-between items-center text-brand-gold">
-                            <span>• BlueNotary Witness Platform Fee (${state.witnessCount} @ $10)</span>
-                            <span>$${state.witnessPlatformTotal.toFixed(2)}</span>
-                        </div>
-                    `;
-                }
-            } else {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-400">
-                        <span>• Witness Signatures (0)</span>
-                        <span>$0.00</span>
-                    </div>
-                `;
-            }
-
-            // Custom Surcharges / Discounts
-            if (state.surchargeVal > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-gray-300">
-                        <span>• Surcharge / Printing Fee</span>
-                        <span>+$${state.surchargeVal.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-            if (state.discountVal > 0) {
-                itemsHtml += `
-                    <div class="flex justify-between items-center text-brand-gold">
-                        <span>• Courtesy Discount</span>
-                        <span>-$${state.discountVal.toFixed(2)}</span>
-                    </div>
-                `;
-            }
-
-            receiptItemsList.innerHTML = itemsHtml;
-        }
-
-        // Reset Calculator to Default
-        function resetCalculator() {
-            serviceSelect.value = 'ron_standard';
-            document.getElementById('client-name').value = '';
-            document.getElementById('quote-notes').value = '';
-            document.getElementById('discount-amount').value = '';
-            document.getElementById('surcharge-amount').value = '';
-            document.getElementById('wit-type-notarized').checked = true;
-            bluenotaryWitnessToggle.checked = false;
-            rideshareTravelFee = 55.00;
-            
-            setPrimarySignatures(1);
-            setWitnessCount(0);
-            onServiceChange();
-
-            showToast("Calculator reset to defaults.");
-        }
-
-        // Copy Client-Ready Quote Breakdown to Clipboard
-        function copyQuoteSummary() {
-            const state = calculatedState;
-            const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-            let summaryText = `==========================================\n`;
-            summaryText += `   SOUND FOX NOTARY — FEE QUOTE SUMMARY   \n`;
-            summaryText += `==========================================\n`;
-            summaryText += `Client: ${state.clientName}\n`;
-            summaryText += `Date: ${dateStr}\n`;
-            if (state.notes) summaryText += `Notes: ${state.notes}\n`;
-            summaryText += `------------------------------------------\n`;
-            summaryText += `SERVICE: ${state.service.name}\n`;
-            summaryText += `------------------------------------------\n`;
-            summaryText += `ITEMIZED BREAKDOWN:\n`;
-            summaryText += ` • Base Notarial Act: $${state.baseStatutory.toFixed(2)}\n`;
-            
-            if (state.idProofing > 0) {
-                summaryText += ` • ID Proofing & Credential Analysis: $${state.idProofing.toFixed(2)}\n`;
-            }
-            if (state.rushFee > 0) {
-                summaryText += ` • Expedited Rush Fee: $${state.rushFee.toFixed(2)}\n`;
-            }
-            if (state.travelFee > 0) {
-                summaryText += ` • Mobile Travel Fee: $${state.travelFee.toFixed(2)}\n`;
-            }
-            
-            summaryText += ` • Primary Signatures: ${state.primarySigs} total (1 included`;
-            if (state.addlPrimaryCount > 0) {
-                summaryText += `, ${state.addlPrimaryCount} add'l @ $${state.addlPrimaryRate.toFixed(2)} = $${state.addlPrimaryTotal.toFixed(2)})`;
-            } else {
-                summaryText += `)`;
-            }
-            summaryText += `\n`;
-
-            if (state.witnessCount > 0) {
-                summaryText += ` • Witness Signatures: ${state.witnessCount} (${state.witnessTypeNotarized ? 'Notarized' : 'Doc-Only'} @ $${state.witnessStatutoryRate.toFixed(2)} = $${state.witnessStatutoryTotal.toFixed(2)})\n`;
-                if (state.isBlueNotaryWitness) {
-                    summaryText += ` • BlueNotary Witness Platform Fee: $${state.witnessPlatformTotal.toFixed(2)}\n`;
-                }
-            } else {
-                summaryText += ` • Witness Signatures: None\n`;
-            }
-
-            if (state.surchargeVal > 0) {
-                summaryText += ` • Printing/Surcharge: +$${state.surchargeVal.toFixed(2)}\n`;
-            }
-            if (state.discountVal > 0) {
-                summaryText += ` • Fee Discount: -$${state.discountVal.toFixed(2)}\n`;
-            }
-
-            summaryText += `------------------------------------------\n`;
-            summaryText += `TOTAL ESTIMATED QUOTE: $${state.grandTotal.toFixed(2)} USD\n`;
-            summaryText += `==========================================\n`;
-            summaryText += `Sound Fox Notary | WA State Licensed & Bonded\n`;
-            summaryText += `Thank you for your business!\n`;
-
-            copyToClipboard(summaryText, "Client quote copied to clipboard!");
-        }
-
-        // Copy Detailed Audit Breakdown for Internal Records
-        function copyDetailedAudit() {
-            const state = calculatedState;
-            const timestamp = new Date().toLocaleString();
-
-            let auditText = `[SOUND FOX NOTARY - INTERNAL AUDIT RECORD]\n`;
-            auditText += `Timestamp: ${timestamp}\n`;
-            auditText += `Client: ${state.clientName}\n`;
-            auditText += `Selected Key: ${serviceSelect.value}\n`;
-            auditText += `Base Statutory Act (RCW 42.45): $${state.baseStatutory.toFixed(2)}\n`;
-            auditText += `ID Proofing / Platform Fee: $${state.idProofing.toFixed(2)}\n`;
-            auditText += `Rush Expedited Fee: $${state.rushFee.toFixed(2)}\n`;
-            auditText += `Travel Component: $${state.travelFee.toFixed(2)}\n`;
-            auditText += `Primary Sigs: ${state.primarySigs} (Add'l: ${state.addlPrimaryCount} x $${state.addlPrimaryRate.toFixed(2)} = $${state.addlPrimaryTotal.toFixed(2)})\n`;
-            auditText += `Witness Sigs: ${state.witnessCount} (Statutory: $${state.witnessStatutoryTotal.toFixed(2)}, Platform: $${state.witnessPlatformTotal.toFixed(2)})\n`;
-            auditText += `Surcharge/Discount: +$${state.surchargeVal.toFixed(2)} / -$${state.discountVal.toFixed(2)}\n`;
-            auditText += `GRAND TOTAL: $${state.grandTotal.toFixed(2)}\n`;
-
-            copyToClipboard(auditText, "Internal audit log copied!");
-        }
-
-        // Safe Clipboard Copy Implementation
-        function copyToClipboard(text, successMsg) {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast(successMsg);
-                }).catch(() => {
-                    fallbackCopy(text, successMsg);
-                });
-            } else {
-                fallbackCopy(text, successMsg);
-            }
-        }
-
-        function fallbackCopy(text, successMsg) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-999999px";
-            textArea.style.top = "-999999px";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast(successMsg);
-            } catch (err) {
-                showToast("Failed to copy automatically.");
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // Show Toast Notification
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            toastMessage.innerText = msg;
-            
-            toast.classList.remove('opacity-0', '-translate-y-16', 'pointer-events-none');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'translate-y-0');
-                toast.classList.add('opacity-0', '-translate-y-16', 'pointer-events-none');
-            }, 2500);
-        }
-    </script>
 </body>
 </html>
